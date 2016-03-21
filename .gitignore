@@ -1,4 +1,10 @@
 *.class
+*.iml
+*.idea
+.settings
+.project
+*.sass-cache
+target
 
 # Package Files #
 *.jar
@@ -6,9 +12,6 @@
 *.ear
 *.iml
 
-.classpath
-.idea
-.project
 .settings/*
 api/.classpath
 api/.project
@@ -22,3 +25,10 @@ omod/target/*
 
 # OS X auto-generated files #
 .DS_Store
+
+ *.css
+omod/src/main/compass/sass-external/*
+
+# Rubygems build directories #
+omod/.rubygems
+omod/.rubygems-provided

@@ -65,7 +65,7 @@ public class ObsChartsDashboardFragmentController {
         startDate.setTime(startDate.getTime() - (ONE_DAY));
         
         //TODO: using PatientIDs, List of Concepts, Start and End Dates range
-        model.addAttribute("obsList", obsService.getObservations(personsList, null, conceptsList, null, null, null, null, null, null, startDate, endDate, true));
+        model.addAttribute("obsList", obsService.getObservations(personsList, null, conceptsList, null, null, null, null, null, null, startDate, endDate, false));
 	}
 
 }

@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -55,20 +53,19 @@ public class ObsChartsDashboardFragmentController {
 		List<Extension> extensions = appFrameworkService.getExtensionsForCurrentUser("patientDashboard.obsChartsList");
 		
 		for (Extension extension : extensions) {
-			Object uuid = extension.getExtensionParams().get("conceptsUuids");
-			/* Commenting this line. I don't need it now... */
-			// Map<String, Object> params = extension.getExtensionParams();
-			if(uuid != null){
-				conceptsList.add(conceptService.getConceptByUuid((String) uuid));
-			}
+			
+			Map<String, Object> params = extension.getExtensionParams();
 		}
 		
 		/* Getting time range: End date is NOW, Start date is 24 hours before */
-		DateTime endDate = DateTime.now();
-		DateTime startDate = endDate.minusHours(24);
+		Calendar cal = Calendar.getInstance();
+        Date endDate = cal.getTime();
+        Date startDate = cal.getTime();
         
-        /* Retrieving OBS using Persons list, List of Concepts, Start and End Dates range */
-        model.addAttribute("obsList", obsService.getObservations(personsList, null, conceptsList, null, null, null, null, null, null, startDate.toDate(), endDate.toDate(), false));
+        startDate.setTime(startDate.getTime() - (ONE_DAY));
+        
+        //TODO: using PatientIDs, List of Concepts, Start and End Dates range
+        model.addAttribute("obsList", obsService.getObservations(personsList, null, conceptsList, null, null, null, null, null, null, startDate, endDate, false));
 	}
 
 }

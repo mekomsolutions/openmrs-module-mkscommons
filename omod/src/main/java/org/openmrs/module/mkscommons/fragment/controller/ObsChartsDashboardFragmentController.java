@@ -37,7 +37,6 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 public class ObsChartsDashboardFragmentController {
 
-	private static final long ONE_DAY = 24*60*60*1000;
 	protected static final Log log = LogFactory
 			.getLog(ObsChartsDashboardFragmentController.class);
 
@@ -55,11 +54,12 @@ public class ObsChartsDashboardFragmentController {
 		List<Extension> extensions = appFrameworkService.getExtensionsForCurrentUser("patientDashboard.obsChartsList");
 		
 		for (Extension extension : extensions) {
-			Object uuid = extension.getExtensionParams().get("conceptsUuids");
+			String[] uuid = (String[]) extension.getExtensionParams().get("conceptsUuids");
 			/* Commenting this line. I don't need it now... */
 			// Map<String, Object> params = extension.getExtensionParams();
 			if(uuid != null){
-				conceptsList.add(conceptService.getConceptByUuid((String) uuid));
+				for(int i = 0; i < uuid.length; i++)
+					conceptsList.add(conceptService.getConceptByUuid(uuid[i]));
 			}
 		}
 		

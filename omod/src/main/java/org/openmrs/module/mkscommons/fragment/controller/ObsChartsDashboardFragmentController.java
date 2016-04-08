@@ -1,13 +1,12 @@
 package org.openmrs.module.mkscommons.fragment.controller;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -16,10 +15,11 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.domain.Extension;
 import org.openmrs.module.appframework.service.AppFrameworkService;
+import org.openmrs.module.mkscommons.ChartPoint;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -37,8 +37,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 public class ObsChartsDashboardFragmentController {
 
-	protected static final Log log = LogFactory
-			.getLog(ObsChartsDashboardFragmentController.class);
+	protected static final Log log = LogFactory.getLog(ObsChartsDashboardFragmentController.class);
 
 	public void controller(FragmentModel model, @FragmentParam("patientId") Patient patient, UiUtils ui,
 			@SpringBean("appFrameworkService") AppFrameworkService appFrameworkService,
@@ -54,12 +53,20 @@ public class ObsChartsDashboardFragmentController {
 		List<Extension> extensions = appFrameworkService.getExtensionsForCurrentUser("patientDashboard.obsChartsList");
 		
 		for (Extension extension : extensions) {
-			String[] uuid = (String[]) extension.getExtensionParams().get("conceptsUuids");
-			/* Commenting this line. I don't need it now... */
-			// Map<String, Object> params = extension.getExtensionParams();
-			if(uuid != null){
-				for(int i = 0; i < uuid.length; i++)
-					conceptsList.add(conceptService.getConceptByUuid(uuid[i]));
+			
+			List<String> uuids = Arrays.asList((String[])extension.getExtensionParams().get("conceptsUuids"));
+			
+			if(uuids != null){
+				for(String uuid: uuids){
+					Concept concept = conceptService.getConceptByUuid(uuid);
+					if(concept.isNumeric())// Concept is added if only NUMERIC.
+						conceptsList.add(concept);
+					else
+						log.warn("WARNING: The concept with NAME: "
+								+ concept.getName(Context.getLocale())
+										.getName() + " and UUID: " + uuid
+								+ " , is EXCLUDED because it is not NUMERIC");
+				}
 			}
 		}
 		
@@ -68,7 +75,59 @@ public class ObsChartsDashboardFragmentController {
 		DateTime startDate = endDate.minusHours(24);
         
         /* Retrieving OBS using Persons list, List of Concepts, Start and End Dates range */
-        model.addAttribute("obsList", obsService.getObservations(personsList, null, conceptsList, null, null, null, null, null, null, startDate.toDate(), endDate.toDate(), false));
+        List<Obs> obsList = obsService.getObservations(personsList, null, conceptsList, null, null, null, null, null, null, startDate.toDate(), endDate.toDate(), false);
+        
+        model.addAttribute("timeSeriesPerConcept", getTimeSeriesPerConcept(obsList));
+        model.addAttribute("conceptNames", getConceptNames(obsList));
+        
+	}
+	
+
+	/**
+	 * Gets the Time Series per each Concept corresponding to each Obs in the
+	 * given List
+	 * 
+	 * @param allObs
+	 *            List of Obs that will be giving the Corresponding Concepts
+	 * @return Map of String: UUID and ChartPoint which is X and Y coordinates
+	 *         for a better View
+	 */
+	protected Map<String, List<ChartPoint>> getTimeSeriesPerConcept(List<Obs> allObs) {
+		
+		Map<String, List<ChartPoint>> allChartPointsMap = new HashMap<String, List<ChartPoint>>();
+		
+		for(Obs obs: allObs){
+			
+			if(allChartPointsMap.keySet().contains(obs.getConcept().getUuid()))
+				/* If the KEY exists, just add the OBS to the list */
+				allChartPointsMap.get(obs.getConcept().getUuid()).add(new ChartPoint(obs.getObsDatetime(), obs.getValueNumeric()));
+			
+			else{
+				List<ChartPoint> chartPoints = new ArrayList<ChartPoint>();
+				chartPoints.add(new ChartPoint(obs.getObsDatetime(), obs.getValueNumeric()));
+				allChartPointsMap.put(obs.getConcept().getUuid(), chartPoints);
+			}
+		}
+		
+		return allChartPointsMap;
+	}
+	
+	/**
+	 * Gets Concept Name considering the User Locale and a given UUID
+	 * 
+	 * @param allObs
+	 *            List of Obs that will be giving the Corresponding Concepts
+	 * @return Map of String: UUID and String: Concept Name for specific Locale
+	 */
+	protected Map<String, String> getConceptNames(List<Obs> allObs) {
+		
+		Map<String, String> conceptNames = new HashMap<String, String>();
+		
+		for(Obs obs: allObs)
+			/* Getting the name with specific Default Locale in OpenMRS */
+			conceptNames.put(obs.getConcept().getUuid(),(obs.getConcept().getName(Context.getLocale()).getName()));
+		
+		return conceptNames;
 	}
 
 }

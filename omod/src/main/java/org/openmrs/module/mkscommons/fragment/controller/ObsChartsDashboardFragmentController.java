@@ -1,6 +1,7 @@
 package org.openmrs.module.mkscommons.fragment.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +111,10 @@ public class ObsChartsDashboardFragmentController {
 				chartPoints.add(new ChartPoint(obs.getObsDatetime(), obs.getValueNumeric()));
 				allChartPointsMap.put(obs.getConcept().getUuid(), chartPoints);
 			}
+		}
+		
+		for (List<ChartPoint> timeSerie : allChartPointsMap.values()) {
+			Collections.sort(timeSerie);
 		}
 		
 		return allChartPointsMap;

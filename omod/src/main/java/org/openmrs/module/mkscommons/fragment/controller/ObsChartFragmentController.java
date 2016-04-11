@@ -19,7 +19,7 @@ public class ObsChartFragmentController {
 	 *         Where <code>x</code> is the Obs Datetime
 	 *         and <code>y</code> is the Numeric value at that date & time
 	 */
-	public static class ChartPoint {
+	public static class ChartPoint implements Comparable<ChartPoint> {
 
 		public Date x;
 		public Double y;
@@ -43,6 +43,14 @@ public class ObsChartFragmentController {
 
 		public void setY(Double y) {
 			this.y = y;
+		}
+
+		/*
+		 * This is necessary to sort time series (= arrays of ChartPoint).
+		 */
+		@Override
+		public int compareTo(ChartPoint chartPoint) {
+			return this.getX().compareTo(chartPoint.getX());
 		}
 	}
 	

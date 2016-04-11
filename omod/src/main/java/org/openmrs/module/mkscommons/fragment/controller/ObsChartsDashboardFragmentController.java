@@ -1,14 +1,13 @@
 package org.openmrs.module.mkscommons.fragment.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -19,7 +18,7 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.domain.Extension;
 import org.openmrs.module.appframework.service.AppFrameworkService;
-import org.openmrs.module.mkscommons.ChartPoint;
+import org.openmrs.module.mkscommons.fragment.controller.ObsChartFragmentController.ChartPoint;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -34,7 +33,6 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
  * 			- Store them in a convenient way to be sent to the view (obsChartsDashboard.gsp) 
  *   ** Fine tune the configuration file while implementing.
  */
-
 public class ObsChartsDashboardFragmentController {
 
 	protected static final Log log = LogFactory.getLog(ObsChartsDashboardFragmentController.class);
@@ -49,23 +47,28 @@ public class ObsChartsDashboardFragmentController {
 		List<Person> personsList = new ArrayList<Person>();
 		personsList.add(personService.getPerson(patient.getPersonId()));
 		
-		/* Need to know about this portion of code ... */
 		List<Extension> extensions = appFrameworkService.getExtensionsForCurrentUser("patientDashboard.obsChartsList");
 		
 		for (Extension extension : extensions) {
 			
-			List<String> uuids = Arrays.asList((String[])extension.getExtensionParams().get("conceptsUuids"));
+			@SuppressWarnings("unchecked")
+			List<String> uuids = (List<String>) extension.getExtensionParams().get("conceptsUuids");
 			
-			if(uuids != null){
-				for(String uuid: uuids){
+			if (uuids != null) {
+				for (String uuid : uuids){
 					Concept concept = conceptService.getConceptByUuid(uuid);
-					if(concept.isNumeric())// Concept is added if only NUMERIC.
+					if(concept == null) {
+						log.warn("WARNING: The concept with UUID: " + uuid
+								+ ", is was not found in the Concept Dictionary.");
+						continue;
+					}
+					if (concept.isNumeric()) // Concept is added only if NUMERIC.
 						conceptsList.add(concept);
 					else
 						log.warn("WARNING: The concept with NAME: "
 								+ concept.getName(Context.getLocale())
 										.getName() + " and UUID: " + uuid
-								+ " , is EXCLUDED because it is not NUMERIC");
+								+ ", is excluded because it is non-numeric and cannot be charted.");
 				}
 			}
 		}
@@ -125,9 +128,8 @@ public class ObsChartsDashboardFragmentController {
 		
 		for(Obs obs: allObs)
 			/* Getting the name with specific Default Locale in OpenMRS */
-			conceptNames.put(obs.getConcept().getUuid(),(obs.getConcept().getName(Context.getLocale()).getName()));
+			conceptNames.put(obs.getConcept().getUuid(), (obs.getConcept().getName(Context.getLocale()).getName()));
 		
 		return conceptNames;
 	}
-
 }

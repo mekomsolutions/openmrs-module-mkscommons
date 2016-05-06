@@ -12,11 +12,11 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
-import org.openmrs.module.mkscommons.fragment.controller.ObsChartFragmentController.ChartPoint;
+import org.openmrs.module.mkscommons.fragment.controller.ObsChartsWidgetFragmentController.ChartPoint;
 
-public class TestObsChartsDashboardFragmentController {
+public class TestObsChartsWidgetFragmentController {
 
-	private ObsChartsDashboardFragmentController ctrl = new ObsChartsDashboardFragmentController(); 
+	private ObsChartsWidgetFragmentController ctrl = new ObsChartsWidgetFragmentController(); 
 	
 	@Test
 	public void shouldSplitAndSortConceptTimeSeries() {

@@ -1,20 +1,20 @@
 [
-    {
-        "id": "${project.parent.groupId}.${project.parent.artifactId}.patientDashboard.obsChartsList",
-        "extensionPointId": "patientDashboard.obsChartsList",
-        "extensionParams": {
-            "conceptsUuids": [/* https://rwanda.pih-emr.org/openmrs/dictionary/concept.htm?conceptId=1114 */
-            	"3ce93cf2-26fe-102b-80cb-0017a47871b2", /* HEIGHT (CM) */
-            	"3ceb5fa0-26fe-102b-80cb-0017a47871b2", /* KARNOFSKY PERFORMANCE SCORE */
-            	"3ce93824-26fe-102b-80cb-0017a47871b2", /* PULSE */
-            	"3ceb11f8-26fe-102b-80cb-0017a47871b2", /* RESPIRATORY RATE */
-            	"3ce93694-26fe-102b-80cb-0017a47871b2", /* DIASTOLIC BLOOD PRESSURE */
-            	"3ce934fa-26fe-102b-80cb-0017a47871b2", /* SYSTOLIC BLOOD PRESSURE */
-            	"3ce939d2-26fe-102b-80cb-0017a47871b2", /* TEMPERATURE (C) */
-            	"3ce93b62-26fe-102b-80cb-0017a47871b2", /* WEIGHT (KG) */
-            	"3ce9401c-26fe-102b-80cb-0017a47871b2", /* BLOOD OXYGEN SATURATION */
-            	"3ceb96b4-26fe-102b-80cb-0017a47871b2"  /* HEAD CIRCUMFERENCE */
-            ]
-        }
+  {
+    "id": "${project.parent.groupId}.${project.parent.artifactId}.patientDashboard.obsChartsList",
+    "extensionPointId": "patientDashboard.obsChartsList",
+    "extensionParams": {
+      "conceptsUuids": [
+        "5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Weight (kg) */
+        "5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Height (cm) */
+        "5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Temperature (C) */
+        "5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Blood oxygen saturation */
+        "5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Pulse */
+        "5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Systolic blood pressure */
+        "5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Diastolic blood pressure */
+        "5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Respiratory rate */
+        "5314AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", /* Head circumference */
+        "5283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /* Karnofsky performance score */
+      ]
     }
+  }
 ]

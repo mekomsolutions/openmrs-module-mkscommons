@@ -2,6 +2,7 @@ package org.openmrs.module.mkscommons.fragment.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.domain.Extension;
 import org.openmrs.module.appframework.service.AppFrameworkService;
-import org.openmrs.module.mkscommons.fragment.controller.ObsChartFragmentController.ChartPoint;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -34,9 +34,44 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
  * 			- Store them in a convenient way to be sent to the view (obsChartsDashboard.gsp) 
  *   ** Fine tune the configuration file while implementing.
  */
-public class ObsChartsDashboardFragmentController {
+public class ObsChartsWidgetFragmentController {
+	
+	public static class ChartPoint implements Comparable<ChartPoint> {
 
-	protected static final Log log = LogFactory.getLog(ObsChartsDashboardFragmentController.class);
+		public Date x;
+		public Double y;
+		
+		public ChartPoint(Date x, Double y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		public Date getX() {
+			return x;
+		}
+
+		public void setX(Date x) {
+			this.x = x;
+		}
+
+		public Double getY() {
+			return y;
+		}
+
+		public void setY(Double y) {
+			this.y = y;
+		}
+
+		/*
+		 * This is necessary to sort time series (= arrays of ChartPoint).
+		 */
+		@Override
+		public int compareTo(ChartPoint chartPoint) {
+			return this.getX().compareTo(chartPoint.getX());
+		}
+	}
+
+	protected static final Log log = LogFactory.getLog(ObsChartsWidgetFragmentController.class);
 
 	public void controller(FragmentModel model, @FragmentParam("patientId") Patient patient, UiUtils ui,
 			@SpringBean("appFrameworkService") AppFrameworkService appFrameworkService,
@@ -59,14 +94,14 @@ public class ObsChartsDashboardFragmentController {
 				for (String uuid : uuids){
 					Concept concept = conceptService.getConceptByUuid(uuid);
 					if(concept == null) {
-						log.warn("WARNING: The concept with UUID: " + uuid
-								+ ", is was not found in the Concept Dictionary.");
+						log.warn("The concept with UUID: " + uuid
+								+ ", was not found in the Concept Dictionary.");
 						continue;
 					}
 					if (concept.isNumeric()) // Concept is added only if NUMERIC.
 						conceptsList.add(concept);
 					else
-						log.warn("WARNING: The concept with NAME: "
+						log.warn("The concept with NAME: "
 								+ concept.getName(Context.getLocale())
 										.getName() + " and UUID: " + uuid
 								+ ", is excluded because it is non-numeric and cannot be charted.");
@@ -81,9 +116,8 @@ public class ObsChartsDashboardFragmentController {
         /* Retrieving OBS using Persons list, List of Concepts, Start and End Dates range */
         List<Obs> obsList = obsService.getObservations(personsList, null, conceptsList, null, null, null, null, null, null, startDate.toDate(), endDate.toDate(), false);
         
-        model.addAttribute("timeSeriesPerConcept", getTimeSeriesPerConcept(obsList));
-        model.addAttribute("conceptNames", getConceptNames(obsList));
-        
+        model.addAttribute("timeSeriesPerConcept", ui.toJson(getTimeSeriesPerConcept(obsList)));
+        model.addAttribute("conceptNames", ui.toJson(getConceptNames(obsList)));
 	}
 	
 

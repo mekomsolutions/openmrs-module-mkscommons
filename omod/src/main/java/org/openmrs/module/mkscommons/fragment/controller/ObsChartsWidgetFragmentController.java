@@ -119,6 +119,7 @@ public class ObsChartsWidgetFragmentController {
         model.addAttribute("timeSeriesPerConcept", ui.toJson(getTimeSeriesPerConcept(obsList)));
         model.addAttribute("conceptNames", ui.toJson(getConceptNames(obsList)));
         model.addAttribute("conceptUnits", ui.toJson(getConceptUnits(obsList, conceptService)));
+
 	}
 	
 

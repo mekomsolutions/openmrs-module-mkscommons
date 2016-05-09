@@ -18,7 +18,10 @@
   var config = {};
   config.timeSeriesPerConcept = ${timeSeriesPerConcept};
   config.conceptNames = ${conceptNames};
+<<<<<<< HEAD
   config.conceptUnits = ${conceptUnits};
+=======
+>>>>>>> MRSCMNS-16: Using n3-charts in a single obs charts widget.
 
 </script>
 

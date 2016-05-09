@@ -22,6 +22,7 @@ angular
         {
           /* We had a few custom members */
           title: $window.config.conceptNames[uuid], // We added this member as a convenience
+          units: $window.config.conceptUnits[uuid], // We added this member as a convenience
           latestValue: lastPoint.y || "_____",
           latestDateTime: new Date(lastPoint.x) || "",
           hasData: hasData,

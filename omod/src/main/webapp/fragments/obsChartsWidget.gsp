@@ -18,6 +18,7 @@
   var config = {};
   config.timeSeriesPerConcept = ${timeSeriesPerConcept};
   config.conceptNames = ${conceptNames};
+  config.conceptUnits = ${conceptUnits};
 
 </script>
 
@@ -44,7 +45,7 @@
 		
 			<div ng-repeat="options in allOptions">
 				<div>
-					<h3 style"width: 50%" class="left">{{options.title}}</h3><p style"width: 50%" class="right">{{options.latestValue}}</p>
+					<h3 style"width: 50%" class="left">{{options.title}}</h3><p style"width: 50%" class="right">{{options.latestValue}} {{options.units}}</p>
 				</div>
 				<p ng-if="options.latestDateTime">{{options.latestDateTime}}</p>
 				<linechart ng-if="options.hasData" data="data" options="options"/>				

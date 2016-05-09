@@ -92,7 +92,7 @@ public class ObsChartsWidgetFragmentController {
 			
 			if (uuids != null) {
 				for (String uuid : uuids){
-					Concept concept = conceptService.getConceptByUuid(uuid);
+					Concept concept = conceptService.getConceptByUuid(uuid);// See the comments on 190-th line of code.
 					if(concept == null) {
 						log.warn("The concept with UUID: " + uuid
 								+ ", was not found in the Concept Dictionary.");
@@ -118,6 +118,7 @@ public class ObsChartsWidgetFragmentController {
         
         model.addAttribute("timeSeriesPerConcept", ui.toJson(getTimeSeriesPerConcept(obsList)));
         model.addAttribute("conceptNames", ui.toJson(getConceptNames(obsList)));
+        model.addAttribute("conceptUnits", ui.toJson(getConceptUnits(obsList, conceptService)));
 	}
 	
 
@@ -170,5 +171,25 @@ public class ObsChartsWidgetFragmentController {
 			conceptNames.put(obs.getConcept().getUuid(), (obs.getConcept().getName(Context.getLocale()).getName()));
 		
 		return conceptNames;
+	}
+	
+	/**
+	 * Gets Concept Numeric Units considering the given Concept UUID
+	 * 
+	 * @param allObs
+	 *            List of Obs that will be giving the Corresponding Concepts
+	 * @return Map of String: UUID and String: Concept Units for specific Locale
+	 */
+	protected Map<String, String> getConceptUnits(List<Obs> allObs, ConceptService conceptService) {
+		
+		Map<String, String> conceptUnits = new HashMap<String, String>();
+		
+		for(Obs obs: allObs){
+			String uuid = obs.getConcept().getUuid();
+			/* Getting the units for the Numeric Concept using UUID */
+			conceptUnits.put(uuid, conceptService.getConceptNumericByUuid(uuid).getUnits()); //This can be also used in the controller method instead of getConceptByUuid method...
+		}
+		
+		return conceptUnits;
 	}
 }

@@ -24,7 +24,7 @@ angular
           title: $window.config.conceptNames[uuid], // We added this member as a convenience
           units: $window.config.conceptUnits[uuid], // We added this member as a convenience
           latestValue: lastPoint.y || "_____",
-          latestDateTime: new Date(lastPoint.x) || "",
+          latestDateTime: formatMyDate(new Date(lastPoint.x)) || "",
           hasData: hasData,
 
           series: [
@@ -47,3 +47,28 @@ angular
     }, $scope.allOptions);
     
   }]);
+
+  function formatMyDate(myDate){
+    var todayDate = new Date();
+    var formattedDate = myDate.getDate() + '-' + (myDate.getMonth() + 1) + '-' + myDate.getFullYear();
+    var seconds = addZero(myDate.getSeconds());
+    var minutes = addZero(myDate.getMinutes());
+    var hour = addZero(myDate.getHours());
+    var formattedTime = hour + ":" + minutes + ":" + seconds;
+    
+    if(myDate == (todayDate.getDate() -1)){
+      var message = "Yesterday @ " + formattedTime;
+      return message;
+    }
+    else{
+      var message = "Today @ " + formattedTime;
+      return message;
+    }
+  }
+
+  function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+  }

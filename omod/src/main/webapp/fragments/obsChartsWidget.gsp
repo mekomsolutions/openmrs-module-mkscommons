@@ -18,10 +18,7 @@
   var config = {};
   config.timeSeriesPerConcept = ${timeSeriesPerConcept};
   config.conceptNames = ${conceptNames};
-<<<<<<< HEAD
   config.conceptUnits = ${conceptUnits};
-=======
->>>>>>> MRSCMNS-16: Using n3-charts in a single obs charts widget.
 
 </script>
 
@@ -48,10 +45,11 @@
 		
 			<div ng-repeat="options in allOptions">
 				<div>
-					<h3 style"width: 50%" class="left">{{options.title}}</h3><p style"width: 50%" class="right">{{options.latestValue}} {{options.units}}</p>
+					<h3 style="width: 50%" class="left">{{options.title}}</h3>
+					<p style="width: 50%" class="right">{{options.latestValue}} <small><em>{{options.units}}</em></small></p>
 				</div>
-				<p ng-if="options.latestDateTime">{{options.latestDateTime}}</p>
-				<linechart ng-if="options.hasData" data="data" options="options"/>				
+				<p ng-if="options.latestDateTime"><small>{{options.latestDateTime}}</small></p>
+				<linechart ng-if="options.hasData" data="data" options="options"/>
 			</div>
 
 		</div>

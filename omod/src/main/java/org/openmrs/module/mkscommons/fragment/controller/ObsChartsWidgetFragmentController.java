@@ -188,9 +188,8 @@ public class ObsChartsWidgetFragmentController {
 		for(Obs obs: allObs){
 			String uuid = obs.getConcept().getUuid();
 			/* Getting the units for the Numeric Concept using UUID */
-			conceptUnits.put(uuid, conceptService.getConceptNumericByUuid(uuid).getUnits()); //This can be also used in the controller method instead of getConceptByUuid method...
+			conceptUnits.put(uuid, conceptService.getConceptNumericByUuid(uuid).getUnits());
 		}
-		
 		return conceptUnits;
 	}
 }

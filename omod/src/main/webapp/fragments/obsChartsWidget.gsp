@@ -46,9 +46,8 @@
 			<div ng-repeat="options in allOptions">
 				<div>
 					<h3 style="width: 50%" class="left">{{options.title}}</h3>
-					<p style="width: 50%" class="right">{{options.latestValue}} <small><em>{{options.units}}</em></small></p>
+					<p ng-if="options.latestDateTime" style="width: 100%" class="left">{{options.latestValue}} <small><em>{{options.units}}</em></small> <i class="icon-time small"></i><small> {{options.latestDateTime}}</small></p>
 				</div>
-				<p ng-if="options.latestDateTime"><small>{{options.latestDateTime}}</small></p>
 				<linechart ng-if="options.hasData" data="data" options="options"/>
 			</div>
 

@@ -33,11 +33,11 @@ angular
               axis: "y",
               key: "y",
               color: "#009384",
-              type: ['dot']
+              type: ['line', 'dot']
             }
           ],
           axes: {
-            x: {key: "x", type: "date"},
+            x: {key: "x", type: "date", zoomable: true},
             y: {
               padding: {min:0, max: 20}
             }
@@ -55,13 +55,14 @@ angular
     var minutes = addZero(myDate.getMinutes());
     var hour = addZero(myDate.getHours());
     var formattedTime = hour + ":" + minutes + ":" + seconds;
+    todayDate.setHours(0,0,0,1);
     
-    if(myDate == (todayDate.getDate() -1)){
-      var message = "Yesterday @ " + formattedTime;
+    if(myDate < todayDate){
+      var message = "Yesterday at " + formattedTime;
       return message;
     }
-    else{
-      var message = "Today @ " + formattedTime;
+    else if(myDate >= todayDate){
+      var message = "Today at " + formattedTime;
       return message;
     }
   }

@@ -37,8 +37,8 @@ angular
             }
           ],
           axes: {
-            x: {key: "x", type: "date", zoomable: true},
-            y: {
+            x: {key: "x", type: "date", ticksRotate: 40, min: 0, max: 10, ticks: 6},
+            y:{
               padding: {min:0, max: 20}
             }
           }
